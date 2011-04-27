@@ -162,10 +162,10 @@ module RSpreedly
       true
     end
 
-    def add_store_credit(amount)
+    def credit(amount)
       credit = Credit.new(:amount => amount)
       result = api_request(:post, "/subscribers/#{self.customer_id}/credits.xml", :body => credit.to_xml)
-      self.attributes = result["subscriber"]
+      #self.attributes = result["subscriber"]
       true
     end
 
