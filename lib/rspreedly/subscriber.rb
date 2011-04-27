@@ -130,7 +130,7 @@ module RSpreedly
     def comp_time_extension(extension)
       result = api_request(:post, "/subscribers/#{self.customer_id}/complimentary_time_extensions.xml", :body => extension.to_xml)
       self.attributes = result["subscriber"]
-      true      
+      true
     end
 
     # Programatically Stopping Auto Renew of a Subscriber (more)
@@ -144,7 +144,7 @@ module RSpreedly
     def subscribe_to_free_trial(plan)
       result = api_request(:post, "/subscribers/#{self.customer_id}/subscribe_to_free_trial.xml", :body => plan.to_xml)
       self.attributes = result["subscriber"]
-      true      
+      true
     end
 
     # Programatically Allow Another Free Trial (more)
@@ -152,18 +152,25 @@ module RSpreedly
     def allow_free_trial
       result = api_request(:post, "/subscribers/#{self.customer_id}/allow_free_trial.xml")
       self.attributes = result["subscriber"]
-      true            
+      true
     end
-    
+
     def grant_lifetime_subscription(feature_level)
       subscription = LifetimeComplimentarySubscription.new(:feature_level => feature_level)
       result = api_request(:post, "/subscribers/#{self.customer_id}/lifetime_complimentary_subscriptions.xml", :body => subscription.to_xml)
       self.attributes = result["subscriber"]
       true
     end
-    
+
+    def add_store_credit(amount)
+      credit = Credit.new(:amount => amount)
+      result = api_request(:post, "/subscribers/#{self.customer_id}/credits.xml", :body => credit.to_xml)
+      self.attributes = result["subscriber"]
+      true
+    end
+
     def to_xml(opts={})
-      
+
       # the api doesn't let us send these things
       # so let's strip them out of the XML
       exclude = [
@@ -174,11 +181,11 @@ module RSpreedly
         :store_credit, :store_credit_currency_code, :subscription_plan_name,   
         :token,        :updated_at
       ]
-      
+
       opts[:exclude] ||= []
       opts[:exclude] |= exclude
-      
-      super(opts)      
+
+      super(opts)
     end
   end
 end
